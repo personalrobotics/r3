@@ -32,8 +32,10 @@ void SE2Joint::convertStateToPositions(
   rotation.fromRotationMatrix(pose.rotation());
 
   _positions.resize(3);
-  _positions[0] = rotation.angle();
-  _positions.tail<2>() = pose.translation();
+  _positions.head<2>() = pose.translation();
+  _positions[2] = rotation.angle();
+//  _positions[0] = rotation.angle();
+//  _positions.tail<2>() = pose.translation();
 }
 
 } // namespace dart

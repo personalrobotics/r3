@@ -37,6 +37,13 @@ void evaluateAtTime(ParabolicRamp::DynamicPath& _path, double _t,
 /// \return whether the state space is supported
 bool checkStateSpace(const statespace::StateSpace* _stateSpace);
 
+/// Computes the tangent vector given two vectors
+/// \param[in] from The source state
+/// \param[in] to The target state
+Eigen::VectorXd getTangentVector(statespace::ConstStateSpacePtr stateSpace,
+                                 const Eigen::VectorXd from,
+                                 const Eigen::VectorXd to);
+
 /// Convert an interpolated trajectory to a spline trajectory
 /// \param _inputTrajectory interpolated trajectory
 /// \return a spline trajectory

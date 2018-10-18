@@ -10,6 +10,7 @@
 #include <aikido/statespace/GeodesicInterpolator.hpp>
 #include <aikido/statespace/Rn.hpp>
 #include <aikido/statespace/SO2.hpp>
+#include <aikido/statespace/SE2.hpp>
 #include <aikido/trajectory/Interpolated.hpp>
 #include <aikido/trajectory/Spline.hpp>
 
@@ -19,6 +20,7 @@ using Eigen::Vector2d;
 using aikido::statespace::CartesianProduct;
 using aikido::statespace::R;
 using aikido::statespace::SO2;
+using aikido::statespace::SE2;
 using aikido::statespace::StateSpace;
 using dart::common::make_unique;
 
@@ -120,6 +122,27 @@ bool checkStateSpace(const statespace::StateSpace* _stateSpace)
   }
 }
 
+Eigen::VectorXd getTangentVector(
+    statespace::ConstStateSpacePtr stateSpace,
+    const Eigen::VectorXd from,
+    const Eigen::VectorXd to)
+{
+  auto state = stateSpace->createState();
+
+  auto fromInverse = stateSpace->createState();
+  stateSpace->expMap(from, state);
+  stateSpace->getInverse(state, fromInverse);
+
+  auto toMinusFrom = stateSpace->createState();
+  stateSpace->expMap(to, state);
+  stateSpace->compose(fromInverse, state, toMinusFrom);
+
+  Eigen::VectorXd tangentVector;
+  stateSpace->logMap(toMinusFrom, tangentVector);
+
+  return tangentVector;
+}
+
 std::unique_ptr<aikido::trajectory::Spline> convertToSpline(
     const ParabolicRamp::DynamicPath& _inputPath,
     double _startTime,
@@ -139,7 +162,6 @@ std::unique_ptr<aikido::trajectory::Spline> convertToSpline(
       transitionTimes.insert(t + ramp1d.tswitch1);
       transitionTimes.insert(t + ramp1d.tswitch2);
     }
-
     t += rampNd.endTime;
     transitionTimes.insert(t);
   }
@@ -162,11 +184,32 @@ std::unique_ptr<aikido::trajectory::Spline> convertToSpline(
     Eigen::VectorXd positionCurr, velocityCurr;
     evaluateAtTime(_inputPath, timeCurr, positionCurr, velocityCurr);
 
+    Eigen::VectorXd a(_stateSpace->getDimension());
+
+    auto currentReference = _stateSpace->createState();
+    _stateSpace->expMap(positionPrev, currentReference);
+    auto referenceInverse = _stateSpace->createState();
+    _stateSpace->getInverse(currentReference, referenceInverse);
+    _stateSpace->logMap(referenceInverse, a);
+
+
+    Eigen::Isometry2d transform(Eigen::Isometry2d::Identity());
+    transform.linear() = Eigen::Rotation2Dd(a[0]).matrix();
+    transform.translation() = a.tail<2>();
+
+    Eigen::Vector3d v1, v2;
+    for (int i = 0; i < velocityPrev.size(); ++i)
+    {
+      v1[i] = velocityPrev[i];
+      v2[i] = velocityPrev[i];
+    }
+
     CubicSplineProblem problem(Vector2d(0, timeCurr - timePrev), 4, dimension);
     problem.addConstantConstraint(0, 0, Eigen::VectorXd::Zero(dimension));
-    problem.addConstantConstraint(0, 1, velocityPrev);
-    problem.addConstantConstraint(1, 0, positionCurr - positionPrev);
-    problem.addConstantConstraint(1, 1, velocityCurr);
+    problem.addConstantConstraint(0, 1, transform * v1);
+    problem.addConstantConstraint(1, 0, getTangentVector(_stateSpace, positionPrev, positionCurr));
+//    problem.addConstantConstraint(1, 0, positionCurr - positionPrev);
+    problem.addConstantConstraint(1, 1, transform * v2);
     const auto spline = problem.fit();
 
     _stateSpace->expMap(positionPrev, segmentStartState);
@@ -174,6 +217,7 @@ std::unique_ptr<aikido::trajectory::Spline> convertToSpline(
     // Add the ramp to the output trajectory.
     assert(spline.getCoefficients().size() == 1);
     const auto& coefficients = spline.getCoefficients().front();
+
     _outputTrajectory->addSegment(
         coefficients, timeCurr - timePrev, segmentStartState);
 
