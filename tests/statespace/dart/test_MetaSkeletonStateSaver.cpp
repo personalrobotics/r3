@@ -54,7 +54,8 @@ TEST_F(MetaSkeletonStateSaverTest, Flags_None)
   EXPECT_DOUBLE_EQ(3., mSkeleton->getPositionUpperLimit(0));
 
   {
-    auto saver = MetaSkeletonStateSaver(mSkeleton, 0);
+    auto saver = MetaSkeletonStateSaver(
+        mSkeleton, MetaSkeletonStateSaver::Options::NONE);
     DART_UNUSED(saver);
 
     mSkeleton->setPositionLowerLimit(0, 1.);

@@ -2,6 +2,17 @@
 #define AIKIDO_STATESPACE_DART_METASKELETONSTATESAVER_HPP_
 
 #include <dart/dynamics/MetaSkeleton.hpp>
+#include "aikido/common/EnumFlags.hpp"
+
+/// Options to specify what MetaSkeletonStateSaver should save.
+enum class MetaSkeletonStateSaverOptions
+{
+  NONE = 0,
+  POSITIONS = 1 << 0,
+  POSITION_LIMITS = 1 << 1,
+};
+
+AIKIDO_ENABLE_BITWISE_OPERATORS(MetaSkeletonStateSaverOptions)
 
 namespace aikido {
 namespace statespace {
@@ -12,12 +23,7 @@ namespace dart {
 class MetaSkeletonStateSaver
 {
 public:
-  /// Options to specify what MetaSkeletonStateSaver should save.
-  enum Options
-  {
-    POSITIONS = 1 << 0,
-    POSITION_LIMITS = 1 << 1,
-  };
+  using Options = MetaSkeletonStateSaverOptions;
 
   /// Construct a MetaSkeletonStateSaver and save the current state of the \c
   /// MetaSkeleton. This state will be restored when MetaSkeletonStateSaver is
@@ -27,7 +33,7 @@ public:
   /// \param[in] options Options to specify what should be saved
   explicit MetaSkeletonStateSaver(
       ::dart::dynamics::MetaSkeletonPtr metaskeleton,
-      int options = POSITIONS | POSITION_LIMITS);
+      Options options = Options::POSITIONS | Options::POSITION_LIMITS);
 
   virtual ~MetaSkeletonStateSaver();
 
@@ -43,7 +49,7 @@ private:
   ::dart::dynamics::MetaSkeletonPtr mMetaSkeleton;
 
   /// Options to specify what should be saved
-  int mOptions;
+  Options mOptions;
 
   /// Saved positions
   Eigen::VectorXd mPositions;

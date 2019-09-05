@@ -1,7 +1,17 @@
 #ifndef AIKIDO_PLANNER_WORLDSTATESAVER_HPP_
 #define AIKIDO_PLANNER_WORLDSTATESAVER_HPP_
 
+#include "aikido/common/EnumFlags.hpp"
 #include "aikido/planner/World.hpp"
+
+/// Options to specify what WorldStateSaver should save.
+enum class WorldStateSaverOptions
+{
+  NONE = 0,
+  CONFIGURATIONS = 1 << 0,
+};
+
+AIKIDO_ENABLE_BITWISE_OPERATORS(WorldStateSaverOptions)
 
 namespace aikido {
 namespace planner {
@@ -10,18 +20,15 @@ namespace planner {
 class WorldStateSaver
 {
 public:
-  /// Options to specify what WorldStateSaver should save.
-  enum Options
-  {
-    CONFIGURATIONS = 1 << 0,
-  };
+  using Options = WorldStateSaverOptions;
 
   /// Construct a WorldStateSaver and save the current state of the \c World.
   /// This state will be restored when WorldStateSaver is destructed.
   ///
   /// \param[in] world World to save state from and restore to.
   /// \param[in] options Options to specify what should be saved
-  explicit WorldStateSaver(World* world, int options = CONFIGURATIONS);
+  explicit WorldStateSaver(
+      World* world, Options options = Options::CONFIGURATIONS);
 
   virtual ~WorldStateSaver();
 
@@ -30,7 +37,7 @@ private:
   World* mWorld;
 
   /// Options to specify what should be saved
-  int mOptions;
+  Options mOptions;
 
   /// Saved state
   World::State mWorldState;

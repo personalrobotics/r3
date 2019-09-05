@@ -1,3 +1,4 @@
+#include "common/EnumFlags.hpp"
 #include "common/ExecutorMultiplexer.hpp"
 #include "common/ExecutorThread.hpp"
 #include "common/PseudoInverse.hpp"
