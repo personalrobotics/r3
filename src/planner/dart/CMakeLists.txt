@@ -23,6 +23,8 @@ set(sources
   ConfigurationToEndEffectorOffsetPlanner.cpp
   ConfigurationToTSR.cpp
   ConfigurationToTSRPlanner.cpp
+  ConfigurationToTSRwithTrajectoryConstraint.cpp
+  CRRTConfigurationToTSRwithTrajectoryConstraintPlanner.cpp
   util.cpp
 )
 
