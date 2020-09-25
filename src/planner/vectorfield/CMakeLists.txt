@@ -1,3 +1,7 @@
+if(NOT TARGET ${PROJECT_NAME}_planner_dart)
+  return()
+endif()
+
 set(sources
   VectorFieldPlanner.cpp
   VectorField.cpp
@@ -19,6 +23,7 @@ target_link_libraries("${PROJECT_NAME}_planner_vectorfield"
     "${PROJECT_NAME}_trajectory"
     "${PROJECT_NAME}_statespace"
     "${PROJECT_NAME}_planner"
+    "${PROJECT_NAME}_planner_dart"
     ${DART_LIBRARIES}
     ${Boost_LIBRARIES}
 )

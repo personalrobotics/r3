@@ -1,7 +1,8 @@
 #==============================================================================
 # Dependencies
 #
-if(NOT TARGET ${PROJECT_NAME}_planner_ompl)
+if(NOT TARGET ${PROJECT_NAME}_planner_ompl OR
+   NOT TARGET ${PROJECT_NAME}_planner_vectorfield)
   return()
 endif()
 set(CMAKE_REQUIRED_DEFINITIONS "")

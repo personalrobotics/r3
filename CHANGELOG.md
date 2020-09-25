@@ -5,6 +5,7 @@
 * Planner
 
   * Fixed key bugs in CRRTs: [#574](https://github.com/personalrobotics/aikido/pull/574)
+  * Make planner_dart component and build all DART planners as planner_dart component: [#567](https://github.com/personalrobotics/aikido/pull/567)
 
 ### 0.4.0 (2020-08-27)
 
