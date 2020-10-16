@@ -1,0 +1,5 @@
+var searchData=
+[
+  ['newtonsmethodprojectable',['NewtonsMethodProjectable',['../d6/db0/classaikido_1_1constraint_1_1NewtonsMethodProjectable.html#a7a3e8722451c0d0b98d96b5ad2767f80',1,'aikido::constraint::NewtonsMethodProjectable']]],
+  ['nominalconfigurationranker',['NominalConfigurationRanker',['../d4/d40/classaikido_1_1distance_1_1NominalConfigurationRanker.html#ab2c05385f4288106b0f93ae64ec774bb',1,'aikido::distance::NominalConfigurationRanker::NominalConfigurationRanker(statespace::dart::ConstMetaSkeletonStateSpacePtr metaSkeletonStateSpace, ::dart::dynamics::ConstMetaSkeletonPtr metaSkeleton, const statespace::CartesianProduct::State *nominalConfiguration, std::vector&lt; double &gt; weights=std::vector&lt; double &gt;())'],['../d4/d40/classaikido_1_1distance_1_1NominalConfigurationRanker.html#af11dfe24db8f49430f742bd2e6d6cd65',1,'aikido::distance::NominalConfigurationRanker::NominalConfigurationRanker(statespace::dart::ConstMetaSkeletonStateSpacePtr metaSkeletonStateSpace, ::dart::dynamics::ConstMetaSkeletonPtr metaSkeleton, std::vector&lt; double &gt; weights=std::vector&lt; double &gt;())']]]
+];

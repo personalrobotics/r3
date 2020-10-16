@@ -1,0 +1,6 @@
+var structaikido_1_1constraint_1_1dart_1_1detail_1_1createDifferentiableFor__impl_3_01const_01statespace_1_1dart_1_1SO3Joint_01_4 =
+[
+    [ "ConstStateSpacePtr", "d4/d28/structaikido_1_1constraint_1_1dart_1_1detail_1_1createDifferentiableFor__impl_3_01const_01statespace_1_1dart_1_1SO3Joint_01_4.html#af06c593f3bf698c775ab7c416813fd8d", null ],
+    [ "StateSpace", "d4/d28/structaikido_1_1constraint_1_1dart_1_1detail_1_1createDifferentiableFor__impl_3_01const_01statespace_1_1dart_1_1SO3Joint_01_4.html#a4a18fe7d62fef1aa86e88b81524fbad8", null ],
+    [ "create", "d4/d28/structaikido_1_1constraint_1_1dart_1_1detail_1_1createDifferentiableFor__impl_3_01const_01statespace_1_1dart_1_1SO3Joint_01_4.html#a2a9b33ff23c992bfd98a1b4de456566b", null ]
+];

@@ -1,0 +1,8 @@
+var structaikido_1_1common_1_1SplineTraits_3_01BSpline_3_01__Scalar_00_01__Dim_00_01__Degree_01_4_00_01__DerivativeOrder_01_4 =
+[
+    [ "BasisDerivativeType", "d6/dba/structaikido_1_1common_1_1SplineTraits_3_01BSpline_3_01__Scalar_00_01__Dim_00_01__Degree_01_4_00_01__DerivativeOrder_01_4.html#a6ad846a4cdbd79469ed59532873e5e26", null ],
+    [ "DerivativeType", "d6/dba/structaikido_1_1common_1_1SplineTraits_3_01BSpline_3_01__Scalar_00_01__Dim_00_01__Degree_01_4_00_01__DerivativeOrder_01_4.html#a186c82af39ad55d7a0f4eced92548b61", null ],
+    [ "OrderAtCompileTime", "d6/dba/structaikido_1_1common_1_1SplineTraits_3_01BSpline_3_01__Scalar_00_01__Dim_00_01__Degree_01_4_00_01__DerivativeOrder_01_4.html#a0709dd2f5d0ff2ef3276cb2d89a68a38a4270788b0012311bc71451c0fb48c586", null ],
+    [ "NumOfDerivativesAtCompileTime", "d6/dba/structaikido_1_1common_1_1SplineTraits_3_01BSpline_3_01__Scalar_00_01__Dim_00_01__Degree_01_4_00_01__DerivativeOrder_01_4.html#a3ea1b3bb6b8ee7d03fdce7c9a947f207ad4855d2458f415a37bdc16efa434cd05", null ],
+    [ "DerivativeMemoryLayout", "d6/dba/structaikido_1_1common_1_1SplineTraits_3_01BSpline_3_01__Scalar_00_01__Dim_00_01__Degree_01_4_00_01__DerivativeOrder_01_4.html#acd12609e4a13d81198e7a7e3c8fcd5c3aa434f2b4e78e3ec868e980241b98b8ad", null ]
+];

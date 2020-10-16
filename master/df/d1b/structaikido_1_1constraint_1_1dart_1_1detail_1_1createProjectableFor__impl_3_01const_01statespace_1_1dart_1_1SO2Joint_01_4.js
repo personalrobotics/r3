@@ -1,0 +1,6 @@
+var structaikido_1_1constraint_1_1dart_1_1detail_1_1createProjectableFor__impl_3_01const_01statespace_1_1dart_1_1SO2Joint_01_4 =
+[
+    [ "ConstStateSpacePtr", "df/d1b/structaikido_1_1constraint_1_1dart_1_1detail_1_1createProjectableFor__impl_3_01const_01statespace_1_1dart_1_1SO2Joint_01_4.html#a9a5a82ae4944093183b95190f33508b0", null ],
+    [ "StateSpace", "df/d1b/structaikido_1_1constraint_1_1dart_1_1detail_1_1createProjectableFor__impl_3_01const_01statespace_1_1dart_1_1SO2Joint_01_4.html#aff0d90f5fd4d11165b046699ddf73aa5", null ],
+    [ "create", "df/d1b/structaikido_1_1constraint_1_1dart_1_1detail_1_1createProjectableFor__impl_3_01const_01statespace_1_1dart_1_1SO2Joint_01_4.html#a382bff9cc77b5220918497423a28b655", null ]
+];
