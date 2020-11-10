@@ -8,6 +8,8 @@
 namespace aikido {
 namespace planner {
 
+AIKIDO_DECLARE_POINTERS(ConfigurationToConfigurationPlanner)
+
 /// Base planner class for ConfigurationToConfiguration planning problem.
 class ConfigurationToConfigurationPlanner
   : public SingleProblemPlanner<

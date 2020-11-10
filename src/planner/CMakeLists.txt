@@ -9,9 +9,10 @@ set(sources
   PlanningResult.cpp
   Problem.cpp
   RankedMetaPlanner.cpp
+  SequenceConfigurationToConfigurationMetaPlanner.cpp
+  SequenceMetaPlanner.cpp
   SnapConfigurationToConfigurationPlanner.cpp
   SnapPlanner.cpp
-  SequenceMetaPlanner.cpp
   World.cpp
   WorldStateSaver.cpp
   dart/ConfigurationToConfiguration.cpp
