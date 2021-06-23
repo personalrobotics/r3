@@ -2,6 +2,10 @@
 
 ### 0.5.0 (2021-XX-XX)
 
+* Control
+
+  * Fixed bug in RosTrajectoryExecutor [#596](https://github.com/personalrobotics/aikido/pull/596)
+
 * RViz
 
   * Propogate removal of WorldInteractiveMarkerViewer to Aikidopy: [#599](https://github.com/personalrobotics/aikido/pull/599)
