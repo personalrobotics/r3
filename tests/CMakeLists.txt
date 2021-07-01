@@ -1,14 +1,6 @@
 # GTest setup
-add_library(gtest STATIC "${CMAKE_CURRENT_SOURCE_DIR}/gtest/src/gtest-all.cc")
-target_include_directories(gtest SYSTEM BEFORE
-  PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/gtest/include"
-  PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/gtest"
-)
-if(NOT WIN32)
-  target_link_libraries(gtest PUBLIC pthread)
-endif()
-add_library(gtest_main STATIC gtest/src/gtest_main.cc)
-target_link_libraries(gtest_main PUBLIC gtest)
+set(CMAKE_POSITION_INDEPENDENT_CODE ON)
+add_subdirectory("gtest")
 
 # Define aikido_add_test for registering Aikido tests.
 set_property(GLOBAL PROPERTY AIKIDO_TESTS)

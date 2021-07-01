@@ -1,5 +1,5 @@
-// Copyright 2008, Google Inc.
-// All rights reserved.
+// Copyright 2008 Google Inc.
+// All Rights Reserved.
 //
 // Redistribution and use in source and binary forms, with or without
 // modification, are permitted provided that the following conditions are
@@ -27,33 +27,29 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
-// Author: preston.a.jackson@gmail.com (Preston Jackson)
-//
-// Google Test - FrameworkSample
-// widget.h
+// Author: arseny.aprelev@gmail.com (Arseny Aprelev)
 //
 
-// Widget is a very simple class used for demonstrating the use of gtest. It
-// simply stores two values a string and an integer, which are returned via
-// public accessors in multiple forms.
+#include "gtest/gtest.h"
 
-#import <string>
+using ::testing::Test;
 
-class Widget {
- public:
-  Widget(int number, const std::string& name);
-  ~Widget();
+TEST(SkipTest, DoesSkip) {
+  GTEST_SKIP();
+  EXPECT_EQ(0, 1);
+}
 
-  // Public accessors to number data
-  float GetFloatValue() const;
-  int GetIntValue() const;
-
-  // Public accessors to the string data
-  std::string GetStringValue() const;
-  void GetCharPtrValue(char* buffer, size_t max_size) const;
-
- private:
-  // Data members
-  float number_;
-  std::string name_;
+class Fixture : public Test {
+ protected:
+  void SetUp() override {
+    GTEST_SKIP() << "skipping all tests for this fixture";
+  }
 };
+
+TEST_F(Fixture, SkipsOneTest) {
+  EXPECT_EQ(5, 7);
+}
+
+TEST_F(Fixture, SkipsAnotherTest) {
+  EXPECT_EQ(99, 100);
+}

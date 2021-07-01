@@ -1,7 +1,6 @@
-#!/bin/bash
+#!/usr/bin/env python
 #
-# Copyright 2008, Google Inc.
-# All rights reserved.
+# Copyright 2019 Google LLC.  All Rights Reserved.
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are
@@ -28,38 +27,28 @@
 # THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 # (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+"""Tests Google Test's gtest skip in environment setup  behavior.
 
-# Executes the samples and tests for the Google Test Framework.
+This script invokes gtest_skip_in_environment_setup_test_ and verifies its
+output.
+"""
 
-# Help the dynamic linker find the path to the libraries.
-export DYLD_FRAMEWORK_PATH=$BUILT_PRODUCTS_DIR
-export DYLD_LIBRARY_PATH=$BUILT_PRODUCTS_DIR
+import gtest_test_utils
 
-# Create some executables.
-test_executables=("$BUILT_PRODUCTS_DIR/gtest_unittest-framework"
-                  "$BUILT_PRODUCTS_DIR/gtest_unittest"
-                  "$BUILT_PRODUCTS_DIR/sample1_unittest-framework"
-                  "$BUILT_PRODUCTS_DIR/sample1_unittest-static")
+# Path to the gtest_skip_in_environment_setup_test binary
+EXE_PATH = gtest_test_utils.GetTestExecutablePath(
+    'gtest_skip_in_environment_setup_test')
 
-# Now execute each one in turn keeping track of how many succeeded and failed. 
-succeeded=0
-failed=0
-failed_list=()
-for test in ${test_executables[*]}; do
-  "$test"
-  result=$?
-  if [ $result -eq 0 ]; then
-    succeeded=$(( $succeeded + 1 ))
-  else
-    failed=$(( failed + 1 ))
-    failed_list="$failed_list $test"
-  fi
-done
+OUTPUT = gtest_test_utils.Subprocess([EXE_PATH]).output
 
-# Report the successes and failures to the console.
-echo "Tests complete with $succeeded successes and $failed failures."
-if [ $failed -ne 0 ]; then
-  echo "The following tests failed:"
-  echo $failed_list
-fi
-exit $failed
+
+# Test.
+class SkipEntireEnvironmentTest(gtest_test_utils.TestCase):
+
+  def testSkipEntireEnvironmentTest(self):
+    self.assertIn('Skipping the entire environment', OUTPUT)
+    self.assertNotIn('FAILED', OUTPUT)
+
+
+if __name__ == '__main__':
+  gtest_test_utils.Main()
