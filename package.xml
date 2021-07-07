@@ -17,6 +17,8 @@
   <depend>python</depend>
   <depend>tinyxml2</depend>
   <depend>yaml-cpp</depend>
+  <depend>srdfdom</depend>
+  <depend>urdf</depend>
   <!-- Workaround to build DART with optional features enabled. -->
   <depend>nlopt</depend>
 

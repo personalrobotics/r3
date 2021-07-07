@@ -2,18 +2,22 @@
 #define AIKIDO_ROBOT_ROBOT_HPP_
 
 #include <chrono>
+#include <string>
 #include <unordered_map>
 
 #include <Eigen/Core>
+#include <dart/collision/CollisionDetector.hpp>
+#include <dart/collision/CollisionFilter.hpp>
 #include <dart/dynamics/dynamics.hpp>
+#include <dart/utils/urdf/DartLoader.hpp>
 
-#include "aikido/common/RNG.hpp"
 #include "aikido/constraint/dart/CollisionFree.hpp"
-#include "aikido/constraint/dart/TSR.hpp"
 #include "aikido/control/TrajectoryExecutor.hpp"
+#include "aikido/planner/Planner.hpp"
+#include "aikido/statespace/StateSpace.hpp"
 #include "aikido/statespace/dart/MetaSkeletonStateSpace.hpp"
-#include "aikido/trajectory/Spline.hpp"
 #include "aikido/trajectory/Trajectory.hpp"
+#include <aikido/io/CatkinResourceRetriever.hpp>
 
 namespace aikido {
 namespace robot {
@@ -26,69 +30,109 @@ AIKIDO_DECLARE_POINTERS(Robot)
 class Robot
 {
 public:
+  /// Construct a new Robot object.
+  /// \param[in] urdf The path to the robot's URDF.
+  /// \param[in] srdf The path to the robot's SRDF.
+  /// \param[in] name The name of the robot.
+  /// \param[in] retriever Retriever to access resources (urdf/srdf).
+  Robot(
+      const dart::common::Uri& urdf,
+      const dart::common::Uri& srdf,
+      const std::string name = "robot",
+      const dart::common::ResourceRetrieverPtr& retriever
+      = std::make_shared<aikido::io::CatkinResourceRetriever>());
+
+  ///
+  /// Construct a new Robot object.
+  ///
+  /// \param[in] skeleton The skeleton defining the robot.
+  /// \param[in] name The name of the robot.
+  Robot(
+      const dart::dynamics::MetaSkeletonPtr& skeleton,
+      const std::string name = "robot",
+      const dart::common::ResourceRetrieverPtr& retriever
+      = std::make_shared<aikido::io::CatkinResourceRetriever>());
+
+  /// Destructor.
   virtual ~Robot() = default;
 
-  /// Executes a trajectory
-  /// \param[in] trajectory Timed trajectory to execute
+  ///
+  /// Executes given trajectory on the robot.
+  ///
+  /// \param[in] trajectory The trajectory to execute.
   virtual std::future<void> executeTrajectory(
-      const trajectory::TrajectoryPtr& trajectory) const = 0;
+      const trajectory::TrajectoryPtr& trajectory) const;
 
-  /// Returns a named configuration
-  /// \param[in] name Name of the configuration
-  /// \return Configuration
-  virtual boost::optional<Eigen::VectorXd> getNamedConfiguration(
-      const std::string& name) const = 0;
+  ///
+  /// Steps the robot through time.
+  ///
+  /// \param[in] timepoint The point in time to step to.
+  virtual void step(const std::chrono::system_clock::time_point& timepoint);
 
-  /// Sets the list of named configurations
-  /// \param[in] namedConfigurations Map of name, configuration
-  virtual void setNamedConfigurations(
-      std::unordered_map<std::string, const Eigen::VectorXd>
-          namedConfigurations)
-      = 0;
+  // TODO(avk): If I use mSpace and mSkeleton, the whole robot moves around
+  // during planning. Is it a locking issue?
+  constraint::dart::CollisionFreePtr getSelfCollisionConstraint(
+      statespace::dart::MetaSkeletonStateSpacePtr space,
+      dart::dynamics::MetaSkeletonPtr skeleton) const;
 
-  /// \return Name of this Robot
-  virtual std::string getName() const = 0;
+  ///
+  /// Given a collision constraint, returns it coupled with the self collision
+  /// constraint of the entire robot.
+  /// TODO(avk): Are the following parameters really necessary?
+  /// \param[in] space The statespace the constraint is specified in.
+  /// \param[in] skeleton The skeleton the constraint is specified for.
+  /// \param[in] collisionFree The collision constraint that is to be tied with
+  /// parent's self collision-constraint.
+  constraint::TestablePtr getFullCollisionConstraint(
+      statespace::dart::MetaSkeletonStateSpacePtr space,
+      dart::dynamics::MetaSkeletonPtr skeleton,
+      const constraint::dart::CollisionFreePtr& collisionFree) const;
 
-  /// \return [const] MetaSkeleton of this robot.
-  virtual dart::dynamics::ConstMetaSkeletonPtr getMetaSkeleton() const = 0;
-
-  /// \return MetaSkeleton of this robot.
-  dart::dynamics::MetaSkeletonPtr getMetaSkeleton();
-
-  /// \return [const] MetaSkeletonStateSpace of this robot.
-  virtual aikido::statespace::dart::ConstMetaSkeletonStateSpacePtr
-  getStateSpace() const = 0;
-
-  /// \return MetaSkeletonStateSpace of this robot.
-  aikido::statespace::dart::MetaSkeletonStateSpacePtr getStateSpace();
-
-  /// Sets the root of this robot.
-  /// \param[in] robot Parent robot
-  virtual void setRoot(Robot* robot) = 0;
-
-  /// Simulates up to the provided timepoint.
-  /// \note Assumes that the robot's skeleton is locked.
-  /// \param[in] timepoint Time to simulate to.
-  virtual void step(const std::chrono::system_clock::time_point& timepoint) = 0;
-
-  /// Returns self-collision constraint.
-  /// \param[in] space Space in which this collision constraint operates.
-  /// \param[in] metaSkeleton Metaskeleton for the statespace.
-  virtual constraint::dart::CollisionFreePtr getSelfCollisionConstraint(
-      const statespace::dart::ConstMetaSkeletonStateSpacePtr& space,
-      const dart::dynamics::MetaSkeletonPtr& metaSkeleton) const = 0;
-
-  /// TODO: Consider changing this to return a CollisionFreePtr.
-  /// Combines provided collision constraint with self collision
-  /// constraint.
-  /// \param[in] space Space in which this collision constraint operates.
-  /// \param[in] metaSkeleton Metaskeleton for the statespace.
-  /// \param[in] collisionFree Collision constraint.
-  /// \return Combined constraint.
-  virtual constraint::TestablePtr getFullCollisionConstraint(
-      const statespace::dart::ConstMetaSkeletonStateSpacePtr& space,
+  /// Registers a subset of the joints of the skeleton as a new robot.
+  ///
+  /// \param[in] metaSkeleton The metaskeleton corresponding to the subrobot.
+  /// \param[in] name Name of the subrobot.
+  /// \param[in] This needs to have default trajectory executor?
+  virtual std::shared_ptr<Robot> registerSubRobot(
       const dart::dynamics::MetaSkeletonPtr& metaSkeleton,
-      const constraint::dart::CollisionFreePtr& collisionFree) const = 0;
+      const std::string& name);
+
+  // Sets the root robot.
+  void setRootRobot(Robot* root)
+  {
+    mRootRobot = root;
+  }
+
+  // TODO(avk): Is this function necessary?
+  // TODO(avk): Will we want the state from the joint state client?
+  statespace::StateSpace::State* getCurrentState() const
+  {
+    return mStateSpace->getScopedStateFromMetaSkeleton(mMetaSkeleton.get());
+  }
+
+  trajectory::TrajectoryPtr planToConfiguration(
+      const planner::PlannerPtr& planner,
+      const statespace::StateSpace::State* goalState,
+      const constraint::TestablePtr& testableConstraint) const;
+
+  // TODO(avk): Make private after testing via libherb.
+  std::string mName;
+  dart::dynamics::MetaSkeletonPtr mMetaSkeleton;
+  aikido::statespace::dart::MetaSkeletonStateSpacePtr mStateSpace;
+  std::shared_ptr<control::TrajectoryExecutor> mTrajectoryExecutor;
+
+  // TODO(avk): Think about when this will get deleted.
+  Robot* mRootRobot{nullptr};
+  // TODO(avk): Better way to store subrobots instead of names?
+  std::unordered_map<std::string, std::shared_ptr<Robot>> mSubRobots;
+
+  // Collision objects.
+  dart::collision::CollisionDetectorPtr mCollisionDetector;
+  std::shared_ptr<dart::collision::BodyNodeCollisionFilter>
+      mSelfCollisionFilter;
+
+  // Resource retriever.
+  const dart::common::ResourceRetrieverPtr& mResourceRetriever;
 };
 
 } // namespace robot

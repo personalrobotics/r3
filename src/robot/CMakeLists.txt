@@ -11,10 +11,7 @@ set(CMAKE_REQUIRED_FLAGS "")
 # Libraries
 #
 set(sources
-  ConcreteRobot.cpp
-  ConcreteManipulator.cpp
   GrabMetadata.cpp
-  Manipulator.cpp
   Robot.cpp
   util.cpp
 )

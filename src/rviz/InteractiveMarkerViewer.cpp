@@ -26,7 +26,11 @@ InteractiveMarkerViewer::InteractiveMarkerViewer(
   , mFrameId(frameId)
   , mWorld(std::move(env))
 {
+  // Set the pattern for trajectory names.
   mTrajectoryNameManager.setPattern("Frame[%s(%d)]");
+
+  // Sets the viewer to update by default.
+  setAutoUpdate(true);
 }
 
 //==============================================================================

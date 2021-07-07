@@ -112,6 +112,8 @@ DART_HAS_VOXELGRIDSHAPE
 )
 
 find_package(ompl REQUIRED)
+find_package(urdf REQUIRED)
+find_package(srdfdom REQUIRED)
 
 #==============================================================================
 # Compiler settings
