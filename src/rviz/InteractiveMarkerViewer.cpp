@@ -27,6 +27,8 @@ InteractiveMarkerViewer::InteractiveMarkerViewer(
   , mWorld(std::move(env))
 {
   mTrajectoryNameManager.setPattern("Frame[%s(%d)]");
+  // Set the viewer to update by default.
+  setAutoUpdate(true);
 }
 
 //==============================================================================
