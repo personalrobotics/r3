@@ -15,6 +15,7 @@ using dart::dynamics::MeshShape;
 using dart::dynamics::PlaneShape;
 using dart::dynamics::Shape;
 using dart::dynamics::SoftMeshShape;
+using dart::dynamics::SphereShape;
 using visualization_msgs::Marker;
 
 namespace aikido {
@@ -294,6 +295,20 @@ bool convertShape(
 }
 
 //==============================================================================
+bool convertShape(
+    const SphereShape& shape,
+    Marker* marker,
+    ResourceServer* /*resourceManager*/)
+{
+  marker->type = Marker::SPHERE;
+  marker->pose.orientation.w = 1.;
+  marker->scale.x = 2. * shape.getRadius();
+  marker->scale.y = 2. * shape.getRadius();
+  marker->scale.z = 2. * shape.getRadius();
+  return true;
+}
+
+//==============================================================================
 bool convertShape(const Shape& shape, Marker* marker, ResourceServer* rm)
 {
   if (shape.is<BoxShape>())
@@ -317,6 +332,9 @@ bool convertShape(const Shape& shape, Marker* marker, ResourceServer* rm)
 
   else if (shape.is<SoftMeshShape>())
     return convertShape(dynamic_cast<const SoftMeshShape&>(shape), marker, rm);
+
+  else if (shape.is<SphereShape>())
+    return convertShape(dynamic_cast<const SphereShape&>(shape), marker, rm);
 
   else
     return false;
